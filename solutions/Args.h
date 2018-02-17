@@ -8,8 +8,7 @@
 
 bool checkArgs(int argc, char **argv, std::ifstream &is, bool &part2)
 {
-	if (argc != 3)
-	{
+	if (argc != 3) {
 		std::cout << "Usage: <input_file> <part>\n";
 		return false;
 	}
