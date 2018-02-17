@@ -49,11 +49,6 @@ int sumNeighbours(const Point &point, std::unordered_map<Point, int, Point::Hash
 	return sum;
 }
 
-bool isBoundary(const Point &point)
-{
-	return point.x == point.y || (point.x < 0 && point.x == -point.y) || (point.x > 0 && point.x == 1 - point.y);
-}
-
 int main(int argc, char **argv)
 {
 	std::ifstream in;
@@ -63,12 +58,11 @@ int main(int argc, char **argv)
 	}
 	int input;
 	in >> input;
-	std::unordered_map<Point, int, Point::Hash> grid;
-	grid[{0, 0}] = 1;
-	Point pos{1, 0};
-	Point dir{1, 0};
-	int count = 1;
 	if (part2) {
+		std::unordered_map<Point, int, Point::Hash> grid;
+		grid[{0, 0}] = 1;
+		Point pos{1, 0};
+		Point dir{1, 0};
 		for (;;) {
 			int sum = sumNeighbours(pos, grid);
 			if (sum > input) {
@@ -76,20 +70,14 @@ int main(int argc, char **argv)
 				break;
 			}
 			grid[pos] = sum;
-			if (isBoundary(pos))
+			if (pos.x == pos.y || (pos.x < 0 && pos.x == -pos.y) || (pos.x > 0 && pos.x == 1 - pos.y))
 				dir.rotL();
 			pos += dir;
 		}
 	} else {
-		for (;;) {
-			grid[pos] = ++count;
-			if (count == input) {
-				std::cout << pos.dist({0, 0});
-				break;
-			}
-			if (isBoundary(pos))
-				dir.rotL();
-			pos += dir;
-		}
+		int layer  = std::ceil(std::sqrt(input)) / 2;
+		int corner = std::pow((2 * layer + 1), 2); 
+		int diff   = (corner - input) % (2 * layer);
+		std::cout << layer + std::abs(diff - layer) << '\n';
 	}
 }
