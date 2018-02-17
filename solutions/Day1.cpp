@@ -21,4 +21,5 @@ int main(int argc, char **argv)
 			checksum += input[i] - '0';
 	}
 	std::cout << checksum << '\n';
+	return 0;
 }
