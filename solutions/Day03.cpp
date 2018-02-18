@@ -4,41 +4,7 @@
 #include <unordered_map>
 #include <cmath>
 #include "Args.h"
-
-struct Point
-{
-	int x;
-	int y;
-	void rotL()
-	{
-		x = -std::exchange(y, x);
-	}
-	int dist(const Point &p) const
-	{
-		return std::abs(x - p.x) + std::abs(y - p.y);
-	}
-	Point &operator+=(const Point &p)
-	{
-		x += p.x;
-		y += p.y;
-		return *this;
-	}
-	Point operator+(const Point &p) const
-	{
-		return Point(*this) += p;
-	}
-	bool operator==(const Point &p) const 
-	{
-		return x == p.x && y == p.y;
-	}
-	struct Hash
-	{
-		std::size_t operator()(const Point &p) const 
-		{
-			return (p.y << 16) ^ p.x;
-		}
-	};
-};
+#include "Point.h"
 
 int sumNeighbours(const Point &point, std::unordered_map<Point, int, Point::Hash> &grid)
 {
@@ -76,7 +42,7 @@ int main(int argc, char **argv)
 		}
 	} else {
 		int layer  = std::ceil(std::sqrt(input)) / 2;
-		int corner = std::pow((2 * layer + 1), 2); 
+		int corner = (2 * layer + 1) * (2 * layer + 1); 
 		int diff   = (corner - input) % (2 * layer);
 		std::cout << layer + std::abs(diff - layer) << '\n';
 	}
