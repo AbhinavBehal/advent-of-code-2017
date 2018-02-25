@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "Args.h"
+#include "../include/Args.h"
 
 int main(int argc, char **argv)
 {

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "Args.h"
+#include "../include/Args.h"
 
 enum class State
 {

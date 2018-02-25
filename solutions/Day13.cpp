@@ -3,7 +3,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
-#include "Args.h"
+#include "../include/Args.h"
 
 bool collision(const std::pair<int, int> &p, int delay = 0)
 {

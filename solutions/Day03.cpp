@@ -3,8 +3,8 @@
 #include <string>
 #include <unordered_map>
 #include <cmath>
-#include "Args.h"
-#include "Point.h"
+#include "../include/Args.h"
+#include "../include/Point.h"
 
 int sumNeighbours(const Point &point, std::unordered_map<Point, int, Point::Hash> &grid)
 {

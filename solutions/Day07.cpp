@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <iterator>
 #include <sstream>
-#include "Args.h"
+#include "../include/Args.h"
 
 int calculateWeight(
 	std::string name, 

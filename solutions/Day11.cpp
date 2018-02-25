@@ -5,8 +5,8 @@
 #include <unordered_map>
 #include <algorithm>
 #include <cmath>
-#include "Args.h"
-#include "Point.h"
+#include "../include/Args.h"
+#include "../include/Point.h"
 
 int hexDist(const Point &p1, const Point &p2)
 {

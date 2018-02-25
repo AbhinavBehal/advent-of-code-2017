@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <array>
 #include <numeric>
-#include "Args.h"
+#include "../include/Args.h"
 
 int main(int argc, char **argv)
 {
