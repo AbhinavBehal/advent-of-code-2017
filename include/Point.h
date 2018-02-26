@@ -13,6 +13,11 @@ struct Point
 	{
 		x = -std::exchange(y, x);
 	}
+	void reverse()
+	{
+		x = -x;
+		y = -y;
+	}
 	int dist(const Point &p) const
 	{
 		return std::abs(x - p.x) + std::abs(y - p.y);
@@ -30,6 +35,10 @@ struct Point
 	bool operator==(const Point &p) const 
 	{
 		return x == p.x && y == p.y;
+	}
+	bool operator!=(const Point &p) const 
+	{
+		return !(*this == p);
 	}
 	struct Hash
 	{
