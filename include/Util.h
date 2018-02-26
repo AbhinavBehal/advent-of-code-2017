@@ -9,6 +9,8 @@
 #include <numeric>
 #include <sstream>
 #include <functional>
+#include <string>
+#include <cctype>
 
 namespace util
 {
@@ -41,6 +43,12 @@ namespace util
 			ss << std::setw(2) << std::setfill('0') << std::hex << val;
 		}
 		return ss.str();
+	}
+
+	bool isNumber(const std::string &str)
+	{
+		return (std::isdigit(str[0]) || str[0] == '-' || str[0] == '+') &&
+				str.substr(1).find_first_not_of("0123456789") == std::string::npos;
 	}
 }
 
