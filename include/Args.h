@@ -14,6 +14,7 @@ bool checkArgs(int argc, char **argv, std::ifstream &is, bool &part2)
 	}
 	std::ifstream temp(argv[1]);
 	if (!temp) {
+		std::cout << "Could not open the input file\n";
 		return false;
 	} else {
 		is = std::move(temp);
