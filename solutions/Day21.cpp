@@ -4,6 +4,8 @@
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
+#include <initializer_list>
+#include <cmath>
 #include "../include/Args.h"
 
 class Grid
@@ -14,8 +16,7 @@ public:
 		std::size_t operator()(const Grid &grid) const
 		{
 			std::size_t hash = 0;
-			for (const auto &row : grid.grid)
-				for (char c : row)
+			for (char c : grid.data)
 					hash = (hash << 1) | (c == '#');
 			return hash;
 		}
@@ -23,32 +24,30 @@ public:
 
 	Grid() = default;
 
-	Grid(std::vector<std::vector<char>> grid) 
-	: grid(grid), N(grid.size()) {}
+	Grid (std::size_t size)
+	: data(size * size), N(size) {}
+
+	Grid(std::initializer_list<char> list) 
+	: data(list), N(std::sqrt(list.size())) {}
 
 	Grid(const std::string &str)
 	{
-		std::vector<char> row;
 		for (char c : str) {
-			switch (c)
-			{
-			case '.':
-			case '#':
-				row.push_back(c);
-				break;
-			case '/':
-				grid.push_back(row);
-				row.clear();
-				break;
-			}
+			if (c == '/') 
+				continue;
+			data.push_back(c);
 		}
-		grid.push_back(row);
-		N = grid.size();
+		N = std::sqrt(data.size());
+	}
+
+	char &at(std::size_t r, std::size_t c)
+	{
+		return data[r * N + c];
 	}
 
 	bool operator==(const Grid &other) const 
 	{
-		return grid == other.grid;
+		return data == other.data;
 	}
 
 	Grid& rotate()
@@ -60,9 +59,9 @@ public:
 
 	Grid& transpose()
 	{
-		for (std::size_t i = 0; i < N; ++i) {
-			for (std::size_t j = i; j < N; ++j) {
-				std::swap(grid[i][j], grid[j][i]);
+		for (std::size_t r = 0; r < N; ++r) {
+			for (std::size_t c = r; c < N; ++c) {
+				std::swap(at(r, c), at(c, r));
 			}
 		}
 		return *this;
@@ -70,9 +69,9 @@ public:
 
 	Grid& flip()
 	{
-		for (std::size_t i = 0; i < N; ++i) {
-			for (std::size_t j = 0; j < N / 2; ++j) {
-				std::swap(grid[i][j], grid[i][N - j - 1]);
+		for (std::size_t r = 0; r < N; ++r) {
+			for (std::size_t c = 0; c < N / 2; ++c) {
+				std::swap(at(r, c), at(r, N - c - 1));
 			}
 		}
 		return *this;
@@ -80,13 +79,13 @@ public:
 
 	Grid region(std::size_t size, std::size_t row, std::size_t col)
 	{
-		std::vector<std::vector<char>> out(size, std::vector<char>(size));
-		for (std::size_t i = 0; i < size; ++i) {
-			for (std::size_t j = 0; j < size; ++j) {
-				out[i][j] = grid[row * size + i][col * size + j];
+		Grid out(size);
+		for (std::size_t r = 0; r < size; ++r) {
+			for (std::size_t c = 0; c < size; ++c) {
+				out.at(r, c) = at(row * size + r, col * size + c);
 			}
 		}
-		return Grid(out);
+		return out;
 	}
 
 	void enhance(const std::unordered_map<Grid, Grid, Grid::Hash> &patterns)
@@ -94,31 +93,26 @@ public:
 		std::size_t width = N % 2 == 0 ? 2 : 3;
 		std::size_t nextWidth = width + 1;
 		std::size_t size = (N * nextWidth) / width;
-		std::vector<std::vector<char>> out(size, std::vector<char>(size));
+		Grid out(size);
 		for (std::size_t row = 0; row < N / width; ++row) {
 			for (std::size_t col = 0; col < N / width; ++col) {
 				auto replacement = patterns.at(region(width, row, col));
 				for (std::size_t i = 0; i < nextWidth; ++i) {
 					for (std::size_t j = 0; j < nextWidth; ++j) {
-						out[row * nextWidth + i][col * nextWidth + j] = replacement.grid[i][j];
+						out.at(row * nextWidth + i, col * nextWidth + j) = replacement.at(i, j);
 					}
 				}
 			}
 		}
-		*this = Grid(out);
+		*this = out;
 	}
 
 	int count()
 	{
-		int n = 0;
-		for (const auto &row : grid)
-			for (char c : row)
-				n += (c == '#' ? 1 : 0);
-		return n;
+		return std::count(data.begin(), data.end(), '#');
 	}
-
 private:
-	std::vector<std::vector<char>> grid;
+	std::vector<char> data;
 	std::size_t N;
 };
 
@@ -132,7 +126,7 @@ int main(int argc, char **argv)
 	std::unordered_map<Grid, Grid, Grid::Hash> patterns;
 	for (std::string line; std::getline(in, line); ) {
 		auto ind = line.find("=>");
-		Grid in(line.substr(0, ind));
+		Grid in(line.substr(0, ind - 1));
 		Grid out(line.substr(ind + 3));
 		// setup all rotations of the input pattern
 		patterns[in] = out;
@@ -144,11 +138,7 @@ int main(int argc, char **argv)
 		patterns[in.rotate()] = out;
 		patterns[in.rotate()] = out;
 	}
-	Grid grid({
-		{'.', '#', '.'},
-		{'.', '.', '#'},
-		{'#', '#', '#'}
-	});
+	Grid grid{'.', '#', '.', '.', '.', '#', '#', '#', '#'};
 	int iter = part2 ? 18 : 5;
 	while (iter--) {
 		grid.enhance(patterns);
