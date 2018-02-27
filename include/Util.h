@@ -50,6 +50,17 @@ namespace util
 		return (std::isdigit(str[0]) || str[0] == '-' || str[0] == '+') &&
 				str.substr(1).find_first_not_of("0123456789") == std::string::npos;
 	}
+
+	bool isPrime(std::int64_t n) {
+		if (n < 2) return false;
+		if (n == 2) return true;
+		if (n % 2 == 0) return false;
+		for (std::int64_t i = 3; i * i <= n; i += 2) {
+			if (n % i == 0)
+				return false;
+		}
+		return true;
+	}
 }
 
 #endif

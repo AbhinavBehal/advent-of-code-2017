@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <iterator>
 #include "../include/Args.h"
 #include "../include/Program.h"
 
@@ -13,9 +14,7 @@ int main(int argc, char **argv)
 	if(!checkArgs(argc, argv, in, part2)) {
 		return -1;
 	}
-	std::vector<std::string> instrs;
-	for (std::string line; std::getline(in, line); )
-		instrs.push_back(line);
+	std::vector<Program::Instruction> instrs {std::istream_iterator<Program::Instruction>{in}, {}};
 	if (part2) {
 		Program p0(instrs, 0), p1(instrs, 1);
 		for (;;) {
