@@ -61,6 +61,16 @@ namespace util
 		}
 		return true;
 	}
+
+	template <typename T>
+	T read(std::istream &is, const std::string &fmt)
+	{
+		T out;
+		std::string line;
+		std::getline(is, line);
+		std::sscanf(line.c_str(), fmt.c_str(), &out);
+		return out;
+	}
 }
 
 #endif
